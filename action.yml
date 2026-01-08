@@ -12,8 +12,18 @@ inputs:
     description: 'GitHub token'
     required: true
 
+  theme:
+    description: 'Card theme (light or dark)'
+    required: false
+    default: 'light'
+
+  output_dir:
+    description: 'Output directory for generated cards'
+    required: false
+    default: 'profile-summary-card-output/github'
+
 runs:
-  using: 'node24'
+  using: 'node20'
   main: 'dist/index.mjs'
 
 branding:
