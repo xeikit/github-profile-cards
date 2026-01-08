@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="495" height="195" viewBox="0 0 495 195" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .background { fill: #ffffff; }
+    .text { fill: #24292f; font-family: 'Segoe UI', Ubuntu, sans-serif; }
+    .text-bold { font-weight: 600; }
+    .text-small { font-size: 12px; }
+    .text-medium { font-size: 14px; }
+    .text-large { font-size: 16px; }
+    .text-title { font-size: 18px; }
+  </style>
+  
+  <rect class="background" width="100%" height="100%" rx="4.5"/>
+  
+  
+    <text x="25" y="35" class="text text-title text-bold">Stats</text>
+    
+    
+        <text x="25" y="70" class="text text-small">Total Stars Earned:</text>
+        <text x="470" y="70" class="text text-medium text-bold" text-anchor="end">25</text>
+      
+        <text x="25" y="95" class="text text-small">Total Commits:</text>
+        <text x="470" y="95" class="text text-medium text-bold" text-anchor="end">1.4k</text>
+      
+        <text x="25" y="120" class="text text-small">Total PRs:</text>
+        <text x="470" y="120" class="text text-medium text-bold" text-anchor="end">249</text>
+      
+        <text x="25" y="145" class="text text-small">Total Issues:</text>
+        <text x="470" y="145" class="text text-medium text-bold" text-anchor="end">192</text>
+      
+        <text x="25" y="170" class="text text-small">Contributed to:</text>
+        <text x="470" y="170" class="text text-medium text-bold" text-anchor="end">11</text>
+      
+  
+</svg>
