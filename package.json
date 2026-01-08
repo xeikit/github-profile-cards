@@ -1,13 +1,39 @@
 {
-  "name": "github-profile-cards",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "@xeikit/github-profile-cards",
+  "type": "module",
+  "version": "0.1.0",
+  "author": "XeicuLy",
+  "description": "Generate GitHub profile summary cards with modern tech stack",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xeikit/github-profile-cards.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.27.0"
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "files": [
+    "dist",
+    "action.yml"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "jiti src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "dependencies": {
+    "@actions/core": "2.0.1",
+    "@actions/github": "7.0.0",
+    "@octokit/graphql": "9.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "25.0.3",
+    "jiti": "2.6.1",
+    "typescript": "5.9.3",
+    "unbuild": "3.6.1"
+  }
 }

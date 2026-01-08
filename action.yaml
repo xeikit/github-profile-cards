@@ -1,0 +1,21 @@
+name: 'GitHub Profile Cards'
+description: 'Generate GitHub profile summary cards'
+author: 'xeikit'
+
+inputs:
+  username:
+    description: 'GitHub username'
+    required: false
+    default: ${{ github.repository_owner }}
+
+  github_token:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: 'node24'
+  main: 'dist/index.mjs'
+
+branding:
+  icon: 'bar-chart-2'
+  color: 'blue'
