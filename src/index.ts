@@ -17,10 +17,26 @@ interface ActionInputs {
 }
 
 const getInputs = (): ActionInputs => {
-  const username = core.getInput('username') || github.context.repo.owner;
-  const githubToken = core.getInput('github_token', { required: true });
-  const theme = (core.getInput('theme') || 'light') as 'light' | 'dark';
-  const outputDir = core.getInput('output_dir') || 'profile-summary-card-output/github';
+  // GitHub Actions環境の場合
+  if (process.env.GITHUB_ACTIONS) {
+    const username = core.getInput('username') || github.context.repo.owner;
+    const githubToken = core.getInput('github_token', { required: true });
+    const theme = (core.getInput('theme') || 'light') as 'light' | 'dark';
+    const outputDir = core.getInput('output_dir') || 'profile-summary-card-output/github';
+
+    return { username, githubToken, theme, outputDir };
+  }
+
+  // ローカル開発環境の場合
+  const username = process.env.GITHUB_USERNAME || 'XeicuLy';
+  const githubToken = process.env.GITHUB_TOKEN;
+
+  if (!githubToken) {
+    throw new Error('GITHUB_TOKEN environment variable is required');
+  }
+
+  const theme = (process.env.THEME || 'light') as 'light' | 'dark';
+  const outputDir = process.env.OUTPUT_DIR || 'profile-summary-card-output/github';
 
   return { username, githubToken, theme, outputDir };
 };
@@ -33,6 +49,12 @@ const setupGitConfig = async (username: string): Promise<void> => {
 };
 
 const commitAndPush = async (outputDir: string): Promise<void> => {
+  // ローカル環境ではスキップ
+  if (!process.env.GITHUB_ACTIONS) {
+    core.info('⏭️  Skipping git commit/push in local environment');
+    return;
+  }
+
   try {
     await execAsync(`git add ${outputDir}`);
 
@@ -83,9 +105,11 @@ const generateCards = async (): Promise<void> => {
 
     core.info(`✅ Generated cards in ${inputs.outputDir}`);
 
-    // Git設定とコミット
-    await setupGitConfig(inputs.username);
-    await commitAndPush(inputs.outputDir);
+    // Git設定とコミット（GitHub Actions環境のみ）
+    if (process.env.GITHUB_ACTIONS) {
+      await setupGitConfig(inputs.username);
+      await commitAndPush(inputs.outputDir);
+    }
 
     core.info('🎉 GitHub Profile Cards generation completed!');
   } catch (error) {

@@ -22,7 +22,8 @@
   "scripts": {
     "build": "unbuild",
     "dev": "jiti src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:local": "GITHUB_TOKEN=$GITHUB_TOKEN tsx src/index.ts"
   },
   "packageManager": "pnpm@10.17.1",
   "dependencies": {
