@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="900" height="580" viewBox="0 0 900 580" xmlns="http://www.w3.org/2000/svg">
+<svg width="900" height="600" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#fafafa;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#0d1117;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d1117;stop-opacity:1" />
     </linearGradient>
-    
-    <linearGradient id="graphGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.4" />
-      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.05" />
-    </linearGradient>
-    
-    <filter id="shadow">
-      <feDropShadow dx="0" dy="2" stdDeviation="8" flood-opacity="0.15"/>
-    </filter>
   </defs>
   
   <style>
-    * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', 'Arial', sans-serif; }
-    .card-bg { fill: url(#cardGradient); filter: url(#shadow); }
-    .text { fill: #18181b; }
-    .text-secondary { fill: #71717a; }
+    * { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+    }
+    .card-bg { fill: url(#cardGradient); }
+    .text { fill: #e6edf3; }
+    .text-secondary { fill: #7d8590; }
     .text-bold { font-weight: 700; }
     .text-semibold { font-weight: 600; }
-    .text-xs { font-size: 11px; }
+    .text-xs { 
+      font-size: 11px; 
+      text-transform: uppercase; 
+      letter-spacing: 1px; 
+      font-weight: 600;
+    }
     .text-sm { font-size: 13px; }
     .text-base { font-size: 15px; }
     .text-lg { font-size: 18px; }
-    .text-xl { font-size: 22px; }
+    .text-xl { font-size: 20px; }
+    .text-2xl { font-size: 26px; }
+    .text-3xl { font-size: 42px; }
     .accent { fill: #3b82f6; }
-    .accent-stroke { stroke: #3b82f6; stroke-width: 2; fill: none; }
-    .divider { stroke: #e4e4e7; stroke-width: 1; }
+    .divider { 
+      stroke: #21262d; 
+      stroke-width: 1.5; 
+      opacity: 0.4; 
+    }
   </style>
   
-  <rect class="card-bg" width="100%" height="100%" rx="12"/>
+  <rect class="card-bg" width="100%" height="100%" rx="20"/>
   
   
     <!-- ヘッダーセクション -->
@@ -42,157 +45,110 @@
       <!-- アバター -->
       <defs>
         <clipPath id="avatarClip">
-          <circle cx="80" cy="80" r="35"/>
+          <circle cx="100" cy="100" r="50"/>
         </clipPath>
       </defs>
-      <circle cx="80" cy="80" r="38" fill="#e4e4e7"/>
-      <image href="https://avatars.githubusercontent.com/u/106128913?u=1adf07c51a72bae8b566bffdff5b1b6a500e259c&v=4" x="45" y="45" width="70" height="70" clip-path="url(#avatarClip)"/>
+      <circle cx="100" cy="100" r="52" fill="#21262d"/>
+      <image href="https://avatars.githubusercontent.com/u/106128913?u=1adf07c51a72bae8b566bffdff5b1b6a500e259c&v=4" x="50" y="50" width="100" height="100" clip-path="url(#avatarClip)"/>
       
       <!-- ユーザー情報 -->
-      <text x="140" y="70" class="text text-xl text-bold">KAKI</text>
-      <text x="140" y="95" class="text-secondary text-sm">@XeicuLy</text>
+      <text x="180" y="90" class="text text-2xl text-bold">KAKI</text>
+      <text x="180" y="120" class="text-secondary text-base">@XeicuLy</text>
       
-      
-      <!-- 統計サマリー（右側・2行配置） -->
-      <!-- 1行目 -->
-      <g transform="translate(580, 55)">
-        
-    <g transform="translate(0,0)">
-      <path d="M8,0 L9.76,5.6 L16,6.08 L10.88,9.92 L12.48,16 L8,12.16 L3.52,16 L5.12,9.92 L0,6.08 L6.24,5.6 Z" class="accent"/>
     </g>
   
-        <text x="25" y="12" class="text text-base text-semibold">25 Stars</text>
+    
+    <!-- 統計カードセクション -->
+    
+    <g id="stats-cards">
+      <!-- Total Contributions Card -->
+      <g transform="translate(80, 200)">
+        <rect width="260" height="100" rx="12" fill="#161b22"/>
+        <text x="25" y="35" class="text-secondary text-xs">TOTAL CONTRIBUTIONS</text>
+        <text x="25" y="70" class="text text-3xl text-bold accent">1.9k</text>
+        <text x="25" y="90" class="text-secondary text-sm">in the last year</text>
       </g>
       
-      <g transform="translate(720, 55)">
-        
-    <g transform="translate(0,0)">
-      <rect x="0" y="0" width="16" height="16" rx="2" class="accent"/>
-      <rect x="4" y="4" width="8" height="8" rx="1" fill="white"/>
-    </g>
-  
-        <text x="25" y="12" class="text text-base text-semibold">95 Repos</text>
+      <!-- Repos Card -->
+      <g transform="translate(360, 200)">
+        <rect width="125" height="100" rx="12" fill="#161b22"/>
+        <text x="25" y="35" class="text-secondary text-xs">REPOS</text>
+        <text x="25" y="70" class="text text-2xl text-bold">95</text>
       </g>
       
-      <!-- 2行目 -->
-      <g transform="translate(580, 95)">
-        
-    <g transform="translate(0,0)">
-      <rect x="0" y="3.2" width="16" height="12.8" rx="2" class="accent"/>
-      <line x1="4.8" y1="0" x2="4.8" y2="4.8" stroke="#3b82f6" stroke-width="2"/>
-      <line x1="11.2" y1="0" x2="11.2" y2="4.8" stroke="#3b82f6" stroke-width="2"/>
-    </g>
-  
-        <text x="25" y="12" class="text text-base text-semibold">3 years on GitHub</text>
+      <!-- Stars Card -->
+      <g transform="translate(505, 200)">
+        <rect width="125" height="100" rx="12" fill="#161b22"/>
+        <text x="25" y="35" class="text-secondary text-xs">STARS</text>
+        <text x="25" y="70" class="text text-2xl text-bold">25</text>
       </g>
       
-      <g transform="translate(580, 125)">
-        
-    <g transform="translate(0,0)">
-      <path d="M4.8,3.2 L0,8 L4.8,12.8" stroke="#3b82f6" stroke-width="2" fill="none"/>
-      <path d="M11.2,3.2 L16,8 L11.2,12.8" stroke="#3b82f6" stroke-width="2" fill="none"/>
-    </g>
-  
-        <text x="25" y="12" class="text text-secondary text-sm">11 contributed projects</text>
+      <!-- Current Streak Card -->
+      <g transform="translate(650, 200)">
+        <rect width="80" height="100" rx="12" fill="#161b22"/>
+        <text x="20" y="35" class="text-secondary text-xs">STREAK</text>
+        <text x="20" y="65" class="text text-xl text-bold">🔥</text>
+        <text x="20" y="90" class="text text-base text-semibold">7w</text>
+      </g>
+      
+      <!-- Longest Streak Card -->
+      <g transform="translate(750, 200)">
+        <rect width="70" height="100" rx="12" fill="#161b22"/>
+        <text x="15" y="35" class="text-secondary text-xs">BEST</text>
+        <text x="15" y="65" class="text text-xl text-bold">🏆</text>
+        <text x="15" y="90" class="text text-base text-semibold">15w</text>
       </g>
     </g>
   
     
     <!-- 区切り線 -->
-    <line x1="40" y1="160" x2="860" y2="160" class="divider"/>
-    
-    <!-- トレンドグラフセクション -->
-    
-    <g id="trend-graph">
-      <text x="40" y="182" class="text text-lg text-bold">📊 Contribution Trend</text>
-      <text x="40" y="202" class="text-secondary text-sm">Last 12 months activity</text>
-      
-      <!-- グラフエリア -->
-      <g transform="translate(40,200)">
-        <!-- エリアチャート -->
-        <path d="M20,68.93617021276596 L90.9090909090909,52.21884498480243 L161.8181818181818,59.209726443769 L232.72727272727272,68.6322188449848 L303.6363636363636,87.47720364741642 L374.5454545454545,109.96960486322189 L445.45454545454544,20 L516.3636363636364,73.79939209726444 L587.2727272727273,53.73860182370821 L658.1818181818181,106.32218844984803 L729.090909090909,55.258358662613986 L800,98.419452887538 L800,120 L20,120 Z" fill="url(#graphGradient)"/>
-        
-        <!-- 上部の線 -->
-        <path d="M20,68.93617021276596 L90.9090909090909,52.21884498480243 L161.8181818181818,59.209726443769 L232.72727272727272,68.6322188449848 L303.6363636363636,87.47720364741642 L374.5454545454545,109.96960486322189 L445.45454545454544,20 L516.3636363636364,73.79939209726444 L587.2727272727273,53.73860182370821 L658.1818181818181,106.32218844984803 L729.090909090909,55.258358662613986 L800,98.419452887538" class="accent-stroke"/>
-        
-        <!-- データポイント -->
-        <circle cx="20" cy="68.93617021276596" r="3" class="accent"/><circle cx="90.9090909090909" cy="52.21884498480243" r="3" class="accent"/><circle cx="161.8181818181818" cy="59.209726443769" r="3" class="accent"/><circle cx="232.72727272727272" cy="68.6322188449848" r="3" class="accent"/><circle cx="303.6363636363636" cy="87.47720364741642" r="3" class="accent"/><circle cx="374.5454545454545" cy="109.96960486322189" r="3" class="accent"/><circle cx="445.45454545454544" cy="20" r="3" class="accent"/><circle cx="516.3636363636364" cy="73.79939209726444" r="3" class="accent"/><circle cx="587.2727272727273" cy="53.73860182370821" r="3" class="accent"/><circle cx="658.1818181818181" cy="106.32218844984803" r="3" class="accent"/><circle cx="729.090909090909" cy="55.258358662613986" r="3" class="accent"/><circle cx="800" cy="98.419452887538" r="3" class="accent"/>
-      </g>
-      
-      <!-- X軸ラベル -->
-      <text x="60" y="368" class="text-secondary text-xs" text-anchor="middle">Feb</text><text x="201.8181818181818" y="368" class="text-secondary text-xs" text-anchor="middle">Apr</text><text x="343.6363636363636" y="368" class="text-secondary text-xs" text-anchor="middle">Jun</text><text x="485.45454545454544" y="368" class="text-secondary text-xs" text-anchor="middle">Aug</text><text x="627.2727272727273" y="368" class="text-secondary text-xs" text-anchor="middle">Oct</text><text x="769.0909090909091" y="368" class="text-secondary text-xs" text-anchor="middle">Dec</text>
-      
-      <!-- 統計サマリー -->
-      <g transform="translate(40, 385)">
-        <text x="0" y="0" class="text text-base text-semibold">
-          1.4k commits
-        </text>
-        <text x="180" y="0" class="text-secondary text-base">•</text>
-        <text x="200" y="0" class="text text-base text-semibold">
-          249 PRs
-        </text>
-        <text x="340" y="0" class="text-secondary text-base">•</text>
-        <text x="360" y="0" class="text text-base text-semibold">
-          192 Issues
-        </text>
-      </g>
-    </g>
-  
-    
-    <!-- 区切り線 -->
-    <line x1="40" y1="415" x2="860" y2="415" class="divider"/>
+    <line x1="80" y1="340" x2="820" y2="340" class="divider"/>
     
     <!-- 技術スタックセクション -->
     
     <g id="tech-stack">
-      <text x="40" y="437" class="text text-lg text-bold">🎨 Tech Stack</text>
+      <text x="80" y="385" class="text text-lg text-bold">Most Used Languages</text>
       
       <g>
+        <!-- 言語名とパーセンテージ -->
+        <text x="80" y="405" class="text text-base text-semibold">TypeScript</text>
+        <text x="820" y="405" class="text-secondary text-sm" text-anchor="end">74.3%</text>
+        
         <!-- 背景バー -->
-        <rect x="40" y="455" width="820" height="28" rx="6" fill="#f4f4f5"/>
+        <rect x="80" y="420" width="740" height="24" rx="6" fill="#21262d"/>
         
         <!-- 言語バー -->
-        <rect x="40" y="455" width="609.0781775994642" height="28" rx="6" fill="#3178c6" opacity="0.85">
-          <animate attributeName="width" from="0" to="609.0781775994642" dur="1s" fill="freeze"/>
+        <rect x="80" y="420" width="549.6559163702482" height="24" rx="6" fill="#3178c6" opacity="0.95">
+          <animate attributeName="width" from="0" to="549.6559163702482" dur="1.5s" fill="freeze"/>
         </rect>
-        
-        <!-- 言語名 -->
-        <text x="52" y="473" class="text text-sm text-semibold">TypeScript</text>
-        
-        <!-- パーセンテージ -->
-        <text x="850" y="473" class="text-secondary text-sm" text-anchor="end">74.3%</text>
       </g>
     
       <g>
+        <!-- 言語名とパーセンテージ -->
+        <text x="80" y="470" class="text text-base text-semibold">MDX</text>
+        <text x="820" y="470" class="text-secondary text-sm" text-anchor="end">22.0%</text>
+        
         <!-- 背景バー -->
-        <rect x="40" y="500" width="820" height="28" rx="6" fill="#f4f4f5"/>
+        <rect x="80" y="485" width="740" height="24" rx="6" fill="#21262d"/>
         
         <!-- 言語バー -->
-        <rect x="40" y="500" width="180.2594827986148" height="28" rx="6" fill="#fcb32c" opacity="0.85">
-          <animate attributeName="width" from="0" to="180.2594827986148" dur="1s" fill="freeze"/>
+        <rect x="80" y="485" width="162.6731917938719" height="24" rx="6" fill="#fcb32c" opacity="0.95">
+          <animate attributeName="width" from="0" to="162.6731917938719" dur="1.5s" fill="freeze"/>
         </rect>
-        
-        <!-- 言語名 -->
-        <text x="52" y="518" class="text text-sm text-semibold">MDX</text>
-        
-        <!-- パーセンテージ -->
-        <text x="850" y="518" class="text-secondary text-sm" text-anchor="end">22.0%</text>
       </g>
     
       <g>
+        <!-- 言語名とパーセンテージ -->
+        <text x="80" y="535" class="text text-base text-semibold">JavaScript</text>
+        <text x="820" y="535" class="text-secondary text-sm" text-anchor="end">1.5%</text>
+        
         <!-- 背景バー -->
-        <rect x="40" y="545" width="820" height="28" rx="6" fill="#f4f4f5"/>
+        <rect x="80" y="550" width="740" height="24" rx="6" fill="#21262d"/>
         
         <!-- 言語バー -->
-        <rect x="40" y="545" width="12.50052780191" height="28" rx="6" fill="#f1e05a" opacity="0.85">
-          <animate attributeName="width" from="0" to="12.50052780191" dur="1s" fill="freeze"/>
+        <rect x="80" y="550" width="11.28096411391878" height="24" rx="6" fill="#f1e05a" opacity="0.95">
+          <animate attributeName="width" from="0" to="11.28096411391878" dur="1.5s" fill="freeze"/>
         </rect>
-        
-        <!-- 言語名 -->
-        <text x="52" y="563" class="text text-sm text-semibold">JavaScript</text>
-        
-        <!-- パーセンテージ -->
-        <text x="850" y="563" class="text-secondary text-sm" text-anchor="end">1.5%</text>
       </g>
     
     </g>

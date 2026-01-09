@@ -73,8 +73,14 @@ const transformData = (data: GraphQLResponse): ProfileCardData => {
   // 総スター数計算
   const totalStars = user.repositories.nodes.reduce((sum, repo) => sum + repo.stargazers.totalCount, 0);
 
+  // 総コントリビューション数
+  const totalContributions = contributions.contributionCalendar.totalContributions;
+
   // 月別コミット集計
   const monthlyCommits = calculateMonthlyCommits(contributions.contributionCalendar.weeks);
+
+  // 週間Streak計算
+  const streaks = calculateWeeklyStreaks(contributions.contributionCalendar.weeks);
 
   // 言語統計計算
   const languageStats = calculateLanguageStats(user.repositories.nodes);
@@ -89,11 +95,52 @@ const transformData = (data: GraphQLResponse): ProfileCardData => {
     totalPRs: contributions.totalPullRequestContributions,
     totalIssues: contributions.totalIssueContributions,
     totalStars,
+    totalContributions,
     publicRepos: user.repositories.totalCount,
     contributedTo: user.repositoriesContributedTo.totalCount,
     accountAge,
+    currentStreak: streaks.current,
+    longestStreak: streaks.longest,
     monthlyCommits,
     topLanguages,
+  };
+};
+
+const calculateWeeklyStreaks = (
+  weeks: GraphQLResponse['user']['contributionsCollection']['contributionCalendar']['weeks']
+) => {
+  let currentStreak = 0;
+  let longestStreak = 0;
+  let tempStreak = 0;
+
+  // 週ごとにコントリビューションがあるかチェック
+  const weeklyContributions = weeks.map(week => {
+    const total = week.contributionDays.reduce((sum, day) => sum + day.contributionCount, 0);
+    return total > 0 ? 1 : 0;
+  });
+
+  // 最新週から遡って現在のstreakを計算
+  for (let i = weeklyContributions.length - 1; i >= 0; i--) {
+    if (weeklyContributions[i] === 1) {
+      currentStreak++;
+    } else {
+      break;
+    }
+  }
+
+  // 最長streakを計算
+  for (const hasContribution of weeklyContributions) {
+    if (hasContribution === 1) {
+      tempStreak++;
+      longestStreak = Math.max(longestStreak, tempStreak);
+    } else {
+      tempStreak = 0;
+    }
+  }
+
+  return {
+    current: currentStreak,
+    longest: longestStreak,
   };
 };
 

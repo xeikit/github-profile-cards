@@ -10,13 +10,18 @@ export interface ProfileCardData {
   totalPRs: number;
   totalIssues: number;
   totalStars: number;
+  totalContributions: number; // NEW
   publicRepos: number;
   contributedTo: number;
-  accountAge: number; // years
+  accountAge: number;
+
+  // Streak情報 (NEW)
+  currentStreak: number;
+  longestStreak: number;
 
   // トレンドデータ
   monthlyCommits: {
-    month: string; // "2025-01"
+    month: string;
     count: number;
   }[];
 
