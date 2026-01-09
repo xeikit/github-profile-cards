@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -49,32 +49,30 @@ const setupGitConfig = async (username: string): Promise<void> => {
 };
 
 const commitAndPush = async (outputDir: string): Promise<void> => {
-  // ローカル環境ではスキップ
   if (!process.env.GITHUB_ACTIONS) {
     core.info('⏭️  Skipping git commit/push in local environment');
     return;
   }
 
   try {
-    // ファイルをステージングエリアに追加
-    await execAsync(`git add ${outputDir}`);
+    await execAsync(`git add -f ${outputDir}`);
 
-    // コミット（変更がない場合はエラーになるがキャッチする）
     try {
       await execAsync('git commit -m "📊 chore: update GitHub profile card"');
       core.info('Changes committed');
     } catch (commitError) {
-      core.info('No changes to commit');
-      return;
+      if (commitError instanceof Error && commitError.message.includes('nothing to commit')) {
+        core.info('No changes to commit (file content is identical)');
+        return;
+      }
+      throw commitError;
     }
 
-    // プッシュ
     await execAsync('git push --force-with-lease');
-
     core.info('Successfully pushed changes');
   } catch (error) {
     if (error instanceof Error) {
-      core.warning(`Failed to push changes: ${error.message}`);
+      core.warning(`Git operation failed: ${error.message}`);
     }
   }
 };
@@ -86,25 +84,28 @@ const generateCards = async (): Promise<void> => {
     const inputs = getInputs();
     core.info(`Generating card for user: ${inputs.username}`);
 
-    // GitHub APIでデータ取得
     const api = createGitHubAPI(inputs.githubToken);
     const data = await api.fetchUserStats(inputs.username);
 
     core.info(`Fetched data: ${data.totalCommits} commits, ${data.totalStars} stars`);
 
-    // SVG生成
     const cardSVG = generateProfileCard(data, inputs.theme);
 
-    // 出力ディレクトリ作成
     await mkdir(inputs.outputDir, { recursive: true });
 
-    // SVGファイル書き込み
     const cardPath = join(inputs.outputDir, 'github-profile-card.svg');
+
+    // 既存ファイルを削除
+    try {
+      await rm(cardPath, { force: true });
+    } catch {
+      // ファイルが存在しない場合は無視
+    }
+
     await writeFile(cardPath, cardSVG, 'utf-8');
 
     core.info(`✅ Generated card in ${inputs.outputDir}`);
 
-    // Git設定とコミット（GitHub Actions環境のみ）
     if (process.env.GITHUB_ACTIONS) {
       await setupGitConfig(inputs.username);
       await commitAndPush(inputs.outputDir);
@@ -120,5 +121,4 @@ const generateCards = async (): Promise<void> => {
   }
 };
 
-// メイン実行
 generateCards();
