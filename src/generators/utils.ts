@@ -1,9 +1,3 @@
-export interface SVGOptions {
-  width: number;
-  height: number;
-  theme?: 'light' | 'dark';
-}
-
 export const createModernSVG = (
   width: number,
   height: number,
@@ -28,20 +22,10 @@ export const createModernSVG = (
     <filter id="shadow">
       <feDropShadow dx="0" dy="2" stdDeviation="8" flood-opacity="0.15"/>
     </filter>
-    
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-      <feMerge>
-        <feMergeNode in="coloredBlur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
   </defs>
   
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-    
-    * { font-family: 'Inter', 'Segoe UI', Ubuntu, sans-serif; }
+    * { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica', 'Arial', sans-serif; }
     .card-bg { fill: url(#cardGradient); filter: url(#shadow); }
     .text { fill: ${isDark ? '#e4e4e7' : '#18181b'}; }
     .text-secondary { fill: ${isDark ? '#a1a1aa' : '#71717a'}; }
@@ -73,39 +57,44 @@ export const formatNumber = (num: number): string => {
   return num.toString();
 };
 
-// エリアチャート用のSVGパス生成
-export const generateAreaPath = (data: number[], width: number, height: number, padding = 20): string => {
-  if (data.length === 0) return '';
+// エリアチャート用のSVGパス生成（修正版）
+export const generateAreaPath = (
+  data: number[],
+  width: number,
+  height: number,
+  padding = 20
+): { area: string; line: string } => {
+  if (data.length === 0) return { area: '', line: '' };
 
   const maxValue = Math.max(...data, 1);
-  const stepX = (width - padding * 2) / (data.length - 1);
+  const stepX = (width - padding * 2) / Math.max(data.length - 1, 1);
   const scaleY = (height - padding * 2) / maxValue;
 
-  // 上部の線
-  const topPath = data
+  // 上部の線のみ
+  const linePath = data
     .map((value, index) => {
       const x = padding + index * stepX;
       const y = height - padding - value * scaleY;
-      return index === 0 ? `M ${x},${y}` : `L ${x},${y}`;
+      return index === 0 ? `M${x},${y}` : ` L${x},${y}`;
     })
-    .join(' ');
+    .join('');
 
-  // 閉じるパス（右下 → 左下）
-  const closePathX = padding + (data.length - 1) * stepX;
-  const closePath = `L ${closePathX},${height - padding} L ${padding},${height - padding} Z`;
+  // エリア用（線 + 閉じるパス）
+  const lastX = padding + (data.length - 1) * stepX;
+  const areaPath = `${linePath} L${lastX},${height - padding} L${padding},${height - padding} Z`;
 
-  return topPath + closePath;
+  return { area: areaPath, line: linePath };
 };
 
-// アイコンSVG
+// アイコンSVG（簡略化）
 export const icons = {
   star: (x: number, y: number, size = 16) => `
     <g transform="translate(${x},${y})">
-      <path d="M ${size / 2} 0 L ${size * 0.61} ${size * 0.35} L ${size} ${size * 0.38} L ${size * 0.68} ${
-    size * 0.62
-  } L ${size * 0.78} ${size} L ${size / 2} ${size * 0.76} L ${size * 0.22} ${size} L ${size * 0.32} ${
-    size * 0.62
-  } L 0 ${size * 0.38} L ${size * 0.39} ${size * 0.35} Z" class="accent"/>
+      <path d="M${size / 2},0 L${size * 0.61},${size * 0.35} L${size},${size * 0.38} L${size * 0.68},${size * 0.62} L${
+    size * 0.78
+  },${size} L${size / 2},${size * 0.76} L${size * 0.22},${size} L${size * 0.32},${size * 0.62} L0,${size * 0.38} L${
+    size * 0.39
+  },${size * 0.35} Z" class="accent"/>
     </g>
   `,
   repo: (x: number, y: number, size = 16) => `
@@ -117,22 +106,18 @@ export const icons = {
   calendar: (x: number, y: number, size = 16) => `
     <g transform="translate(${x},${y})">
       <rect x="0" y="${size * 0.2}" width="${size}" height="${size * 0.8}" rx="2" class="accent"/>
-      <line x1="${size * 0.3}" y1="0" x2="${size * 0.3}" y2="${
-    size * 0.3
-  }" stroke="currentColor" stroke-width="2" class="accent-stroke"/>
-      <line x1="${size * 0.7}" y1="0" x2="${size * 0.7}" y2="${
-    size * 0.3
-  }" stroke="currentColor" stroke-width="2" class="accent-stroke"/>
+      <line x1="${size * 0.3}" y1="0" x2="${size * 0.3}" y2="${size * 0.3}" stroke="#3b82f6" stroke-width="2"/>
+      <line x1="${size * 0.7}" y1="0" x2="${size * 0.7}" y2="${size * 0.3}" stroke="#3b82f6" stroke-width="2"/>
     </g>
   `,
   code: (x: number, y: number, size = 16) => `
     <g transform="translate(${x},${y})">
-      <path d="M ${size * 0.3} ${size * 0.2} L 0 ${size / 2} L ${size * 0.3} ${
+      <path d="M${size * 0.3},${size * 0.2} L0,${size / 2} L${size * 0.3},${
     size * 0.8
-  }" stroke-width="2" class="accent-stroke"/>
-      <path d="M ${size * 0.7} ${size * 0.2} L ${size} ${size / 2} L ${size * 0.7} ${
+  }" stroke="#3b82f6" stroke-width="2" fill="none"/>
+      <path d="M${size * 0.7},${size * 0.2} L${size},${size / 2} L${size * 0.7},${
     size * 0.8
-  }" stroke-width="2" class="accent-stroke"/>
+  }" stroke="#3b82f6" stroke-width="2" fill="none"/>
     </g>
   `,
 };
