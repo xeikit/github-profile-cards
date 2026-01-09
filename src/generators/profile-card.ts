@@ -3,7 +3,7 @@ import { createModernSVG, formatNumber } from './utils.js';
 
 export const generateProfileCard = (data: ProfileCardData, theme: 'light' | 'dark' = 'light'): string => {
   const width = 900;
-  const height = 600; // 520 → 600 (余白のため)
+  const height = 600;
 
   const content = `
     <!-- ヘッダーセクション -->
@@ -27,14 +27,14 @@ const generateHeader = (data: ProfileCardData, theme: 'light' | 'dark'): string 
 
   return `
     <g id="header">
-      <!-- アバター -->
-      <defs>
-        <clipPath id="avatarClip">
-          <circle cx="100" cy="100" r="50"/>
-        </clipPath>
-      </defs>
+      <!-- Octocat アバター (Minimal) -->
       <circle cx="100" cy="100" r="52" fill="${isDark ? '#21262d' : '#e1e4e8'}"/>
-      <image href="${data.avatarUrl}" x="50" y="50" width="100" height="100" clip-path="url(#avatarClip)"/>
+      <circle cx="100" cy="100" r="50" fill="${isDark ? '#24292f' : '#24292f'}"/>
+      
+      <!-- Simple GitHub Mark -->
+      <g transform="translate(67.5, 67.5)">
+        <path fill="white" d="M32.5,0C14.5,0,0,14.5,0,32.5c0,14.4,9.3,26.6,22.2,30.9c1.6,0.3,2.2-0.7,2.2-1.6c0-0.8,0-2.9,0-5.7 c-9,2-10.9-4.3-10.9-4.3c-1.5-3.8-3.6-4.8-3.6-4.8c-2.9-2,0.2-2,0.2-2c3.2,0.2,4.9,3.3,4.9,3.3c2.9,4.9,7.5,3.5,9.3,2.7 c0.3-2.1,1.1-3.5,2-4.3c-7.1-0.8-14.6-3.6-14.6-15.8c0-3.5,1.2-6.4,3.3-8.6c-0.3-0.8-1.4-4.1,0.3-8.5c0,0,2.7-0.9,8.8,3.3 c2.5-0.7,5.3-1.1,8-1.1c2.7,0,5.5,0.4,8,1.1c6.1-4.1,8.8-3.3,8.8-3.3c1.7,4.4,0.6,7.7,0.3,8.5c2,2.2,3.3,5.1,3.3,8.6 c0,12.3-7.5,15-14.6,15.8c1.1,1,2.2,2.9,2.2,5.9c0,4.3,0,7.7,0,8.8c0,0.9,0.6,1.9,2.2,1.6C55.7,59.1,65,46.8,65,32.5 C65,14.5,50.5,0,32.5,0z"/>
+      </g>
       
       <!-- ユーザー情報 -->
       <text x="180" y="90" class="text text-2xl text-bold">${data.name ?? data.username}</text>
@@ -100,12 +100,12 @@ const generateStatsCards = (data: ProfileCardData, theme: 'light' | 'dark'): str
 
 const generateTechStack = (data: ProfileCardData, theme: 'light' | 'dark'): string => {
   const barWidth = 740;
-  const barHeight = 24; // 28 → 24 (さらに薄く)
-  const startY = 420; // 380 → 420 (タイトルから大きく離す)
+  const barHeight = 24;
+  const startY = 420;
 
   const languageBars = data.topLanguages
     .map((lang, index) => {
-      const y = startY + index * 65; // 50 → 65 (バー間を広く)
+      const y = startY + index * 65;
       const width = (lang.percentage / 100) * barWidth;
 
       return `
