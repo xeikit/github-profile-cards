@@ -1,5 +1,5 @@
 name: 'GitHub Profile Cards'
-description: 'Generate GitHub profile summary cards'
+description: 'Generate GitHub profile summary cards with modern design'
 author: 'xeikit'
 
 inputs:
@@ -20,7 +20,7 @@ inputs:
   output_dir:
     description: 'Output directory for generated cards'
     required: false
-    default: 'profile-summary-card-output/github'
+    default: 'profile-summary-card-output'
 
 runs:
   using: 'node20'
