@@ -68,7 +68,25 @@ const commitAndPush = async (outputDir: string): Promise<void> => {
       throw commitError;
     }
 
-    await execAsync('git push --force-with-lease');
+    // リモートの最新状態を取得
+    await execAsync('git fetch origin');
+
+    // 現在のブランチ名を取得
+    const { stdout: branch } = await execAsync('git branch --show-current');
+    const currentBranch = branch.trim();
+
+    core.info(`Pushing to branch: ${currentBranch}`);
+
+    // rebaseしてからpush
+    try {
+      await execAsync(`git rebase origin/${currentBranch}`);
+      await execAsync('git push');
+    } catch (rebaseError) {
+      // rebaseが失敗したら、force pushで解決
+      core.warning('Rebase failed, using force push');
+      await execAsync('git push --force');
+    }
+
     core.info('Successfully pushed changes');
   } catch (error) {
     if (error instanceof Error) {
