@@ -56,22 +56,29 @@ const commitAndPush = async (outputDir: string): Promise<void> => {
   }
 
   try {
-    await execAsync(`git add ${outputDir}`);
+    // 変更があるかチェック
+    const { stdout: diff } = await execAsync(`git diff --exit-code ${outputDir} || echo "changed"`);
 
-    const { stdout: status } = await execAsync('git status --porcelain');
-
-    if (!status.trim()) {
-      core.info('No changes to commit');
+    if (!diff.includes('changed')) {
+      core.info('No changes detected in SVG output');
       return;
     }
 
+    await execAsync(`git add ${outputDir}`);
     await execAsync('git commit -m "📊 chore: update GitHub profile card"');
+
+    // リモートの変更を取得してrebase
+    await execAsync('git fetch origin');
+    await execAsync('git rebase origin/${GITHUB_REF##*/} || git rebase --abort');
+
     await execAsync('git push');
 
     core.info('Successfully committed and pushed changes');
   } catch (error) {
     if (error instanceof Error) {
-      core.warning(`Failed to commit changes: ${error.message}`);
+      // pushに失敗しても警告だけ出して続行
+      core.warning(`Failed to push changes: ${error.message}`);
+      core.info('SVG file was generated successfully locally');
     }
   }
 };
