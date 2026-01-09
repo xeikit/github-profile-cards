@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { createGitHubAPI } from './github-api.js';
-import { generateStatsSVG, generateProfileDetailsSVG } from './generators';
+import { generateProfileCard } from './generators/index.js';
 
 const execAsync = promisify(exec);
 
@@ -22,7 +22,7 @@ const getInputs = (): ActionInputs => {
     const username = core.getInput('username') || github.context.repo.owner;
     const githubToken = core.getInput('github_token', { required: true });
     const theme = (core.getInput('theme') || 'light') as 'light' | 'dark';
-    const outputDir = core.getInput('output_dir') || 'profile-summary-card-output/github';
+    const outputDir = core.getInput('output_dir') || 'profile-summary-card-output';
 
     return { username, githubToken, theme, outputDir };
   }
@@ -36,7 +36,7 @@ const getInputs = (): ActionInputs => {
   }
 
   const theme = (process.env.THEME || 'light') as 'light' | 'dark';
-  const outputDir = process.env.OUTPUT_DIR || 'profile-summary-card-output/github';
+  const outputDir = process.env.OUTPUT_DIR || 'profile-summary-card-output';
 
   return { username, githubToken, theme, outputDir };
 };
@@ -65,7 +65,7 @@ const commitAndPush = async (outputDir: string): Promise<void> => {
       return;
     }
 
-    await execAsync('git commit -m "📊 chore: update GitHub profile cards"');
+    await execAsync('git commit -m "📊 chore: update GitHub profile card"');
     await execAsync('git push');
 
     core.info('Successfully committed and pushed changes');
@@ -78,32 +78,28 @@ const commitAndPush = async (outputDir: string): Promise<void> => {
 
 const generateCards = async (): Promise<void> => {
   try {
-    core.info('🚀 Starting GitHub Profile Cards generation...');
+    core.info('🚀 Starting GitHub Profile Card generation...');
 
     const inputs = getInputs();
-    core.info(`Generating cards for user: ${inputs.username}`);
+    core.info(`Generating card for user: ${inputs.username}`);
 
     // GitHub APIでデータ取得
     const api = createGitHubAPI(inputs.githubToken);
-    const stats = await api.fetchUserStats(inputs.username);
+    const data = await api.fetchUserStats(inputs.username);
 
-    core.info(`Fetched stats: ${stats.totalCommits} commits, ${stats.totalStars} stars`);
+    core.info(`Fetched data: ${data.totalCommits} commits, ${data.totalStars} stars`);
 
     // SVG生成
-    const statsSVG = generateStatsSVG(stats, inputs.theme);
-    const profileDetailsSVG = generateProfileDetailsSVG(stats, inputs.theme);
+    const cardSVG = generateProfileCard(data, inputs.theme);
 
     // 出力ディレクトリ作成
     await mkdir(inputs.outputDir, { recursive: true });
 
     // SVGファイル書き込み
-    const statsPath = join(inputs.outputDir, '3-stats.svg');
-    const profileDetailsPath = join(inputs.outputDir, '0-profile-details.svg');
+    const cardPath = join(inputs.outputDir, 'github-profile-card.svg');
+    await writeFile(cardPath, cardSVG, 'utf-8');
 
-    await writeFile(statsPath, statsSVG, 'utf-8');
-    await writeFile(profileDetailsPath, profileDetailsSVG, 'utf-8');
-
-    core.info(`✅ Generated cards in ${inputs.outputDir}`);
+    core.info(`✅ Generated card in ${inputs.outputDir}`);
 
     // Git設定とコミット（GitHub Actions環境のみ）
     if (process.env.GITHUB_ACTIONS) {
@@ -111,7 +107,7 @@ const generateCards = async (): Promise<void> => {
       await commitAndPush(inputs.outputDir);
     }
 
-    core.info('🎉 GitHub Profile Cards generation completed!');
+    core.info('🎉 GitHub Profile Card generation completed!');
   } catch (error) {
     if (error instanceof Error) {
       core.setFailed(`Action failed: ${error.message}`);

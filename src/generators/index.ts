@@ -1,3 +1,2 @@
-export * from './stats.js';
-export * from './profile-details.js';
+export { generateProfileCard } from './profile-card.js';
 export * from './utils.js';

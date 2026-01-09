@@ -1,16 +1,26 @@
-export interface GitHubUserStats {
+export interface ProfileCardData {
+  // 基本情報
   username: string;
+  name: string | null;
+  avatarUrl: string;
+  bio: string | null;
+
+  // 実績サマリー
   totalCommits: number;
   totalPRs: number;
   totalIssues: number;
   totalStars: number;
+  publicRepos: number;
   contributedTo: number;
+  accountAge: number; // years
 
-  contributions: {
-    date: string;
+  // トレンドデータ
+  monthlyCommits: {
+    month: string; // "2025-01"
     count: number;
   }[];
 
+  // 技術スタック
   topLanguages: {
     name: string;
     color: string;
@@ -21,12 +31,17 @@ export interface GitHubUserStats {
 // GraphQL Response Types
 export interface GraphQLResponse {
   user: {
+    name: string | null;
+    login: string;
+    avatarUrl: string;
+    bio: string | null;
+    createdAt: string;
     contributionsCollection: {
       totalCommitContributions: number;
       totalPullRequestContributions: number;
       totalIssueContributions: number;
-      totalRepositoryContributions: number;
       contributionCalendar: {
+        totalContributions: number;
         weeks: {
           contributionDays: {
             date: string;

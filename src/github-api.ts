@@ -1,5 +1,5 @@
 import { graphql } from '@octokit/graphql';
-import type { GitHubUserStats, GraphQLResponse, LanguageStats } from './types.js';
+import type { ProfileCardData, GraphQLResponse, LanguageStats } from './types.js';
 
 export const createGitHubAPI = (token: string) => {
   const graphqlWithAuth = graphql.defaults({
@@ -9,16 +9,21 @@ export const createGitHubAPI = (token: string) => {
   });
 
   return {
-    fetchUserStats: async (username: string): Promise<GitHubUserStats> => {
+    fetchUserStats: async (username: string): Promise<ProfileCardData> => {
       const query = `
         query($username: String!) {
           user(login: $username) {
+            name
+            login
+            avatarUrl
+            bio
+            createdAt
             contributionsCollection {
               totalCommitContributions
               totalPullRequestContributions
               totalIssueContributions
-              totalRepositoryContributions
               contributionCalendar {
+                totalContributions
                 weeks {
                   contributionDays {
                     date
@@ -53,40 +58,71 @@ export const createGitHubAPI = (token: string) => {
 
       const data = await graphqlWithAuth<GraphQLResponse>(query, { username });
 
-      return transformData(username, data);
+      return transformData(data);
     },
   };
 };
 
-const transformData = (username: string, data: GraphQLResponse): GitHubUserStats => {
+const transformData = (data: GraphQLResponse): ProfileCardData => {
   const user = data.user;
   const contributions = user.contributionsCollection;
+
+  // アカウント年齢計算
+  const accountAge = Math.floor((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24 * 365));
 
   // 総スター数計算
   const totalStars = user.repositories.nodes.reduce((sum, repo) => sum + repo.stargazers.totalCount, 0);
 
-  // コントリビューションデータ変換
-  const contributionDays = contributions.contributionCalendar.weeks
-    .flatMap(week => week.contributionDays)
-    .map(day => ({
-      date: day.date,
-      count: day.contributionCount,
-    }));
+  // 月別コミット集計
+  const monthlyCommits = calculateMonthlyCommits(contributions.contributionCalendar.weeks);
 
   // 言語統計計算
   const languageStats = calculateLanguageStats(user.repositories.nodes);
-  const topLanguages = getTopLanguages(languageStats, 5);
+  const topLanguages = getTopLanguages(languageStats, 3);
 
   return {
-    username,
+    username: user.login,
+    name: user.name,
+    avatarUrl: user.avatarUrl,
+    bio: user.bio,
     totalCommits: contributions.totalCommitContributions,
     totalPRs: contributions.totalPullRequestContributions,
     totalIssues: contributions.totalIssueContributions,
     totalStars,
+    publicRepos: user.repositories.totalCount,
     contributedTo: user.repositoriesContributedTo.totalCount,
-    contributions: contributionDays,
+    accountAge,
+    monthlyCommits,
     topLanguages,
   };
+};
+
+const calculateMonthlyCommits = (
+  weeks: GraphQLResponse['user']['contributionsCollection']['contributionCalendar']['weeks']
+) => {
+  const monthlyMap = new Map<string, number>();
+
+  for (const week of weeks) {
+    for (const day of week.contributionDays) {
+      const month = day.date.substring(0, 7); // "2025-01"
+      monthlyMap.set(month, (monthlyMap.get(month) ?? 0) + day.contributionCount);
+    }
+  }
+
+  // 直近12ヶ月のデータを取得
+  const now = new Date();
+  const months: { month: string; count: number }[] = [];
+
+  for (let i = 11; i >= 0; i--) {
+    const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    months.push({
+      month,
+      count: monthlyMap.get(month) ?? 0,
+    });
+  }
+
+  return months;
 };
 
 const calculateLanguageStats = (repos: GraphQLResponse['user']['repositories']['nodes']) => {
